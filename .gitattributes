@@ -1,0 +1,28 @@
+# ============================================================
+# Roots Gallery — .gitattributes
+# Enforce consistent line endings across OS environments
+# ============================================================
+
+# Default: auto-detect text files and normalise to LF in repo
+* text=auto
+
+# Explicitly treat web source files as text (LF in repo)
+*.html   text eol=lf
+*.css    text eol=lf
+*.js     text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.svg    text eol=lf
+
+# Treat images as binary (no line-ending conversion)
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ico    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary

@@ -1,0 +1,61 @@
+# ============================================================
+# Roots Gallery — .gitignore
+# Static HTML / CSS / JavaScript website
+# ============================================================
+
+# ── OS files ─────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ── Editor / IDE ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+
+# ── Node (if a build step is ever added) ─────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+dist/
+build/
+
+# ── Environment / secrets ────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Temporary files ──────────────────────────────────────────
+*.tmp
+*.temp
+.cache/
+
+# ── Zip / archive ────────────────────────────────────────────
+*.zip
+*.tar.gz
+*.rar
+
+# ── Images that are too large for Git LFS  ───────────────────
+# Uncomment the lines below and use Git LFS if your images
+# exceed ~50 MB in total, or individual files exceed 5 MB.
+# *.jpg
+# *.jpeg
+# *.png
+# *.webp
+# *.gif
