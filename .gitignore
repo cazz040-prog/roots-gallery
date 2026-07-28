@@ -59,3 +59,8 @@ logs/
 # *.png
 # *.webp
 # *.gif
+
+# ── Internal / confidential ───────────────────────────────────
+# The stock sheet PDF contains internal cost prices (costZAR).
+# Do not commit it to a public repository.
+stock-information/*.pdf

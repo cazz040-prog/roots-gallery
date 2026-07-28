@@ -3959,6 +3959,36 @@ body[data-page="checkout"] main {
 }
 
 /* ============================================================
+   WINTER 2026 CATALOGUE ADDITIONS
+   ============================================================ */
+
+/* Style number below product name on cards */
+.product-card-style-number {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--s2);
+}
+
+/* Price-on-request / enquire text */
+.price-on-request {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+/* Enquire note on product detail page */
+.product-enquire-note {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  line-height: var(--lh-base);
+  margin-bottom: var(--s5);
+  max-width: 40ch;
+}
+
+/* ============================================================
    PRINT
    ============================================================ */
 @media print {

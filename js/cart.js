@@ -38,10 +38,10 @@ const Cart = {
     return this.items.reduce((sum, item) => sum + item.price * item.qty, 0);
   },
 
-  /** Get shipping estimate */
+  /** Get shipping estimate (NIS) */
   get shipping() {
     if (this.subtotal === 0) return 0;
-    return this.subtotal >= 500 ? 0 : 25;
+    return this.subtotal >= 500 ? 0 : 45;
   },
 
   /** Get total */
@@ -51,6 +51,7 @@ const Cart = {
 
   /** Add item to cart */
   add(product, qty = 1) {
+    if (!product.purchasable || product.priceNIS === null) return this;
     const existing = this.items.find(i => i.id === product.id);
     if (existing) {
       existing.qty += qty;
@@ -59,10 +60,11 @@ const Cart = {
         id:        product.id,
         slug:      product.slug,
         name:      product.name,
+        styleNumber: product.styleNumber,
         category:  product.categoryLabel,
-        price:     product.price,
-        image:     product.thumbnail,
-        materials: product.materials,
+        price:     product.priceNIS,
+        image:     product.image || product.thumbnail,
+        materials: product.colour || '',
         qty,
       });
     }
@@ -122,7 +124,7 @@ const Cart = {
 // ─── Format helpers ──────────────────────────────────────────────────
 
 function fmtPrice(n) {
-  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0 });
+  return '\u20AA' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0 });
 }
 
 // ─── Toast Notification ──────────────────────────────────────────────
@@ -239,7 +241,7 @@ function renderCartPage() {
         <span>Estimated Shipping</span>
         <span>${shippingLabel}</span>
       </div>
-      ${Cart.shipping > 0 ? `<div class="cart-summary-row"><span style="font-size:var(--fs-xs);color:var(--text-3)">Free shipping on orders over $500</span></div>` : ''}
+      ${Cart.shipping > 0 ? `<div class="cart-summary-row"><span style="font-size:var(--fs-xs);color:var(--text-3)">Free shipping on orders over \u20AA500</span></div>` : ''}
       <div class="cart-summary-row total">
         <span>Total</span>
         <span>${fmtPrice(Cart.total)}</span>

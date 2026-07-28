@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
       categories:   [],
       colors:       [],
       availability: [],
-      sizes:        [],
       minPrice:     undefined,
       maxPrice:     undefined,
     },
@@ -70,15 +69,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (state.filters._new)      list = list.filter(p => p.isNew);
     if (state.filters._featured) list = list.filter(p => p.isFeatured);
 
-    // Text search
+    // Text search across name, category, style number, and colour
     if (state.query) {
       const q = state.query;
       list = list.filter(p =>
         p.name.toLowerCase().includes(q) ||
         p.categoryLabel.toLowerCase().includes(q) ||
-        p.materials.toLowerCase().includes(q) ||
-        p.shortDescription.toLowerCase().includes(q) ||
-        p.tags.some(t => t.toLowerCase().includes(q))
+        p.styleNumber.toLowerCase().includes(q) ||
+        (p.colour && p.colour.toLowerCase().includes(q))
       );
     }
 
@@ -98,33 +96,43 @@ document.addEventListener('DOMContentLoaded', function () {
   // ─── Card HTML builder ────────────────────────────────────────────────
 
   function buildCardHTML(product) {
-    const badge = product.availability === 'limited'
-      ? `<span class="badge badge--limited">Limited</span>`
-      : product.isNew
-        ? `<span class="badge badge--new">New</span>`
-        : '';
+    const badge = product.isNew
+      ? `<span class="badge badge--new">New</span>`
+      : '';
+
+    const colourLine = product.colour
+      ? `<div class="product-card-material">${escHtml(product.colour)}</div>`
+      : '';
+
+    const priceHtml = product.purchasable && product.priceNIS !== null
+      ? `<span itemprop="price" content="${product.priceNIS}">\u20AA${product.priceNIS}</span><meta itemprop="priceCurrency" content="ILS">`
+      : `<span class="price-on-request">${product.requiresPriceConfirmation ? 'Price confirmation required' : 'Enquire for price'}</span>`;
+
+    const cartBtn = product.purchasable
+      ? `<button
+           class="product-card-action-btn"
+           data-quick-add="${escHtml(product.slug)}"
+           aria-label="Add ${escHtml(product.name)} to cart"
+           title="Add to cart"
+         >
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+         </button>`
+      : '';
 
     return `
       <article class="product-card" itemscope itemtype="https://schema.org/Product">
         <a href="product.html?slug=${product.slug}" class="product-card-image"
-           itemprop="url" aria-label="View ${escHtml(product.name)}">
+           itemprop="url" aria-label="View ${escHtml(product.name)} ${escHtml(product.styleNumber)}">
           <img
-            src="${escHtml(product.thumbnail)}"
-            alt="${escHtml(product.name)}"
+            src="${escHtml(product.image)}"
+            alt="${escHtml(product.alt)}"
             loading="lazy"
-            width="600" height="800"
+            width="800" height="1067"
             itemprop="image"
           >
           <div class="product-card-badges">${badge}</div>
           <div class="product-card-actions">
-            <button
-              class="product-card-action-btn"
-              data-quick-add="${escHtml(product.slug)}"
-              aria-label="Add ${escHtml(product.name)} to cart"
-              title="Add to cart"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            </button>
+            ${cartBtn}
             <button
               class="product-card-action-btn"
               data-wishlist="${escHtml(product.slug)}"
@@ -140,15 +148,11 @@ document.addEventListener('DOMContentLoaded', function () {
           <h2 class="product-card-name" itemprop="name">
             <a href="product.html?slug=${escHtml(product.slug)}">${escHtml(product.name)}</a>
           </h2>
-          <div class="product-card-material">
-            ${escHtml(product.materials.split(',').slice(0, 2).join(', '))}
-          </div>
+          <div class="product-card-style-number">${escHtml(product.styleNumber)}</div>
+          ${colourLine}
           <div class="product-card-footer"
                itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-            <span class="product-price">
-              <span itemprop="price" content="${product.price}">$${product.price}</span>
-              <meta itemprop="priceCurrency" content="USD">
-            </span>
+            <span class="product-price">${priceHtml}</span>
             <a href="product.html?slug=${escHtml(product.slug)}"
                class="product-card-quick-add"
                aria-label="View ${escHtml(product.name)}">View</a>
@@ -227,12 +231,12 @@ document.addEventListener('DOMContentLoaded', function () {
       formEl.querySelectorAll('input[name="category"]:checked')
     ).map(el => el.value);
 
-    state.filters.availability = Array.from(
-      formEl.querySelectorAll('input[name="availability"]:checked')
+    state.filters.colors = Array.from(
+      formEl.querySelectorAll('input[name="colour"]:checked')
     ).map(el => el.value);
 
-    state.filters.sizes = Array.from(
-      formEl.querySelectorAll('input[name="size"]:checked')
+    state.filters.availability = Array.from(
+      formEl.querySelectorAll('input[name="availability"]:checked')
     ).map(el => el.value);
 
     const minEl = formEl.querySelector('input[name="price-min"]');
@@ -251,6 +255,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (el) el.checked = true;
     });
 
+    state.filters.colors.forEach(val => {
+      const el = formEl.querySelector(`input[name="colour"][value="${val}"]`);
+      if (el) el.checked = true;
+    });
+
     state.filters.availability.forEach(val => {
       const el = formEl.querySelector(`input[name="availability"][value="${val}"]`);
       if (el) el.checked = true;
@@ -261,15 +270,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function clearFilters() {
     state.filters = {
-      categories: [], colors: [], availability: [], sizes: [],
+      categories: [], colors: [], availability: [],
       minPrice: undefined, maxPrice: undefined,
     };
     state.query = '';
     state.filters._new      = false;
     state.filters._featured = false;
     [sidebarFormEl, drawerFormEl].forEach(f => { if (f) f.reset(); });
-    // Reset color swatches
-    document.querySelectorAll('.filter-swatch.active').forEach(s => s.classList.remove('active'));
     render();
     updateActiveFilterCount();
   }
@@ -281,7 +288,6 @@ document.addEventListener('DOMContentLoaded', function () {
       (state.filters.categories?.length  || 0) +
       (state.filters.colors?.length      || 0) +
       (state.filters.availability?.length|| 0) +
-      (state.filters.sizes?.length       || 0) +
       (state.filters.minPrice !== undefined ? 1 : 0) +
       (state.filters.maxPrice !== undefined ? 1 : 0);
 
@@ -317,10 +323,28 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>
 
-        <!-- Availability -->
-        <div class="filter-group open">
+        <!-- Colour -->
+        <div class="filter-group">
           <div class="filter-group-header">
-            <span class="filter-group-title">Availability</span>
+            <span class="filter-group-title">Colour</span>
+            <svg class="filter-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="filter-group-body">
+            <div class="filter-options">
+              ${FILTER_OPTIONS.colors.map(opt => `
+                <label class="filter-option">
+                  <input type="checkbox" name="colour" value="${opt.value}">
+                  <span>${opt.label}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div class="filter-group">
+          <div class="filter-group-header">
+            <span class="filter-group-title">Pricing</span>
             <svg class="filter-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div class="filter-group-body">
@@ -335,58 +359,17 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>
 
-        <!-- Size -->
+        <!-- Price range (NIS) -->
         <div class="filter-group">
           <div class="filter-group-header">
-            <span class="filter-group-title">Size</span>
-            <svg class="filter-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div class="filter-group-body">
-            <div class="filter-options">
-              ${FILTER_OPTIONS.sizes.map(opt => `
-                <label class="filter-option">
-                  <input type="checkbox" name="size" value="${opt.value}">
-                  <span>${opt.label}</span>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- Colour -->
-        <div class="filter-group">
-          <div class="filter-group-header">
-            <span class="filter-group-title">Colour Palette</span>
-            <svg class="filter-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div class="filter-group-body">
-            <div class="filter-swatches" style="padding-top:var(--s4)">
-              ${FILTER_OPTIONS.colors.map(color => `
-                <button
-                  type="button"
-                  class="filter-swatch"
-                  style="background:${color.hex}"
-                  data-color="${color.value}"
-                  title="${color.label}"
-                  aria-label="Filter by ${color.label}"
-                  aria-pressed="false"
-                ></button>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- Price -->
-        <div class="filter-group">
-          <div class="filter-group-header">
-            <span class="filter-group-title">Price (USD)</span>
+            <span class="filter-group-title">Price (₪ NIS)</span>
             <svg class="filter-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div class="filter-group-body">
             <div class="price-range-inputs">
-              <input type="number" name="price-min" placeholder="$ Min" min="0" max="9999" aria-label="Minimum price">
+              <input type="number" name="price-min" placeholder="₪ Min" min="0" max="9999" aria-label="Minimum price in NIS">
               <span class="price-range-sep">—</span>
-              <input type="number" name="price-max" placeholder="$ Max" min="0" max="9999" aria-label="Maximum price">
+              <input type="number" name="price-max" placeholder="₪ Max" min="0" max="9999" aria-label="Maximum price in NIS">
             </div>
           </div>
         </div>
@@ -400,19 +383,6 @@ document.addEventListener('DOMContentLoaded', function () {
     container.querySelectorAll('.filter-group-header').forEach(header => {
       const group = header.closest('.filter-group');
       header.addEventListener('click', () => group.classList.toggle('open'));
-    });
-
-    // Colour swatch toggles
-    container.querySelectorAll('.filter-swatch').forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        const isActive = swatch.classList.toggle('active');
-        swatch.setAttribute('aria-pressed', String(isActive));
-        state.filters.colors = Array.from(
-          container.querySelectorAll('.filter-swatch.active')
-        ).map(s => s.dataset.color);
-        render();
-        updateActiveFilterCount();
-      });
     });
 
     // Checkbox/input changes

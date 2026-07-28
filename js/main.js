@@ -7,33 +7,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ─── Product Card Builder ────────────────────────────────────────────
 
-  function buildProductCard(product, size = 'default') {
-    const badge = product.availability === 'limited'
-      ? `<span class="badge badge--limited">Limited</span>`
-      : product.isNew
-        ? `<span class="badge badge--new">New</span>`
-        : '';
+  function buildProductCard(product) {
+    const badge = product.isNew ? `<span class="badge badge--new">New</span>` : '';
+    const priceHtml = product.purchasable && product.priceNIS !== null
+      ? `\u20AA${product.priceNIS}`
+      : `<span class="price-on-request">Enquire for price</span>`;
+    const cartBtn = product.purchasable
+      ? `<button class="product-card-action-btn" data-quick-add="${product.slug}"
+                 aria-label="Add ${product.name} to cart" title="Add to cart">
+           ${cartIconSVG()}
+         </button>`
+      : '';
 
     return `
       <article class="product-card">
-        <a href="product.html?slug=${product.slug}" class="product-card-image" aria-label="${product.name}">
+        <a href="product.html?slug=${product.slug}" class="product-card-image"
+           aria-label="${product.name} ${product.styleNumber}">
           <img
-            src="${product.thumbnail}"
-            alt="${product.name}"
+            src="${product.image}"
+            alt="${product.alt}"
             loading="lazy"
-            width="600"
-            height="800"
+            width="800"
+            height="1067"
           >
           <div class="product-card-badges">${badge}</div>
           <div class="product-card-actions">
-            <button
-              class="product-card-action-btn"
-              data-quick-add="${product.slug}"
-              aria-label="Quick add ${product.name} to cart"
-              title="Add to cart"
-            >
-              ${cartIconSVG()}
-            </button>
+            ${cartBtn}
             <button
               class="product-card-action-btn"
               data-wishlist="${product.slug}"
@@ -49,9 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
           <h3 class="product-card-name">
             <a href="product.html?slug=${product.slug}">${product.name}</a>
           </h3>
-          <div class="product-card-material">${product.materials.split(',')[0]}</div>
+          <div class="product-card-style-number">${product.styleNumber}</div>
+          ${product.colour ? `<div class="product-card-material">${product.colour}</div>` : ''}
           <div class="product-card-footer">
-            <span class="product-price">$${product.price}</span>
+            <span class="product-price">${priceHtml}</span>
             <a
               href="product.html?slug=${product.slug}"
               class="product-card-quick-add"
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const slug = btn.dataset.quickAdd;
         if (!slug || typeof PRODUCTS === 'undefined') return;
         const product = PRODUCTS.find(p => p.slug === slug);
-        if (!product || typeof Cart === 'undefined') return;
+        if (!product || !product.purchasable || typeof Cart === 'undefined') return;
         Cart.add(product, 1);
       });
     });

@@ -54,10 +54,11 @@
                 <h4>Categories</h4>
                 <ul>
                   <li><a href="shop.html">All Pieces</a></li>
-                  <li><a href="shop.html?category=beaded-dolls">Beaded Dolls</a></li>
-                  <li><a href="shop.html?category=cowrie-shell-dolls">Cowrie Shell Dolls</a></li>
-                  <li><a href="shop.html?category=collector-pieces">Collector Pieces</a></li>
-                  <li><a href="shop.html?category=decorative-sculptures">Decorative Sculptures</a></li>
+                  <li><a href="shop.html?category=namji-dolls">Namji Dolls</a></li>
+                  <li><a href="shop.html?category=tikar-bangles">Tikar Bangles</a></li>
+                  <li><a href="shop.html?category=woven-baskets">Woven Baskets</a></li>
+                  <li><a href="shop.html?category=wooden-bowls">Wooden Bowls</a></li>
+                  <li><a href="shop.html?category=small-bowls">Small Bowls</a></li>
                 </ul>
               </div>
               <div class="mega-menu-col">
@@ -65,8 +66,7 @@
                 <ul>
                   <li><a href="shop.html?filter=new">New Arrivals</a></li>
                   <li><a href="shop.html?filter=featured">Editor's Selection</a></li>
-                  <li><a href="shop.html?filter=limited">Limited Editions</a></li>
-                  <li><a href="shop.html?sort=price-asc">Under $200</a></li>
+                  <li><a href="shop.html?sort=price-asc">Price: Low to High</a></li>
                 </ul>
               </div>
               <div class="mega-menu-col">
@@ -171,10 +171,11 @@
         <h4>Shop</h4>
         <ul>
           <li><a href="shop.html">All Pieces</a></li>
-          <li><a href="shop.html?category=beaded-dolls">Beaded Dolls</a></li>
-          <li><a href="shop.html?category=cowrie-shell-dolls">Cowrie Shell Dolls</a></li>
-          <li><a href="shop.html?category=collector-pieces">Collector Pieces</a></li>
-          <li><a href="shop.html?category=decorative-sculptures">Decorative Sculptures</a></li>
+          <li><a href="shop.html?category=namji-dolls">Namji Dolls</a></li>
+          <li><a href="shop.html?category=tikar-bangles">Tikar Bangles</a></li>
+          <li><a href="shop.html?category=woven-baskets">Woven Baskets</a></li>
+          <li><a href="shop.html?category=wooden-bowls">Wooden Bowls</a></li>
+          <li><a href="shop.html?category=small-bowls">Small Bowls</a></li>
           <li><a href="shop.html?filter=new">New Arrivals</a></li>
         </ul>
       </div>
@@ -422,7 +423,7 @@
         const slug = btn.dataset.quickAdd;
         if (!slug || typeof PRODUCTS === 'undefined') return;
         const product = PRODUCTS.find(p => p.slug === slug);
-        if (product && typeof Cart !== 'undefined') Cart.add(product, 1);
+        if (product && product.purchasable && typeof Cart !== 'undefined') Cart.add(product, 1);
       });
     });
   }
