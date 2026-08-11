@@ -31,15 +31,84 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ─── DOM refs ─────────────────────────────────────────────────────────
 
-  const grid        = document.getElementById('shop-products-grid');
-  const countEl     = document.getElementById('shop-product-count');
-  const sortSelect  = document.getElementById('shop-sort-select');
-  const gridViewBtn = document.getElementById('view-grid');
-  const listViewBtn = document.getElementById('view-list');
+  const grid             = document.getElementById('shop-products-grid');
+  const countEl          = document.getElementById('shop-product-count');
+  const sortSelect       = document.getElementById('shop-sort-select');
+  const gridViewBtn      = document.getElementById('view-grid');
+  const listViewBtn      = document.getElementById('view-list');
+  const categoryEditorial = document.getElementById('category-editorial');
 
   // Filter-related refs (captured after injection)
   let sidebarFormEl = null;
   let drawerFormEl  = null;
+
+  // ─── Category Editorial Copy ──────────────────────────────────────────
+
+  const CATEGORY_EDITORIALS = {
+    'namji-dolls': {
+      heading: 'Namji Dolls',
+      image:   'assets/products/winter-2026/dn14.webp',
+      imageAlt: 'Handcrafted Namji doll with shell detailing, one of a kind',
+      body: `<p>Among the most treasured pieces in our collection are the Namji dolls, handcrafted symbols of beauty, fertility and protection originating from the Namji people of Cameroon. Traditionally adorned with beads, shells and intricate carvings, each doll carries a story of heritage and craftsmanship passed down through generations.</p>
+<p>At Roots, our Namji dolls are created entirely by hand, making each piece one of a kind. They are available in a range of sizes, from extra-small to striking extra-large, to suit every space, from intimate displays to statement interiors.</p>
+<p>For collectors and connoisseurs, we also offer a Special Limited Edition series, crafted in smaller quantities and distinguished by rare detailing and elevated finishes. These exclusive pieces embody the essence of timelessness, individuality and enduring artistry.</p>
+<p>More than decorative objects, Namji dolls are heirlooms, expressions of tradition and artistry designed to be cherished for years to come.</p>`,
+    },
+    'tikar-bangles': {
+      heading: 'Tikar Bangles',
+      image:   'assets/products/winter-2026/tb01.webp',
+      imageAlt: 'Beaded Tikar bangle displayed, intricately handcrafted wearable art',
+      body: `<p>Among the most captivating adornments in our collection are the Tikar Bangles. These vibrant emblems of celebration and connection are inspired by the centuries-old beadwork traditions of Cameroon's Tikar people. Each colour and motif carries meaning, a quiet language of heritage expressed through artistry.</p>
+<p>At Roots, every bangle is meticulously handcrafted by skilled artisans who string thousands of tiny glass beads in intricate patterns. The result is a piece of wearable art where no two designs are ever alike.</p>
+<p>Our Tikar Bangles are available in a spectrum of sizes and palettes, from delicate single strands to bold statement cuffs.</p>
+<p>For discerning collectors, we present a Special Limited Edition series distinguished by rare colourways and exceptional detailing, a testament to refined craftsmanship.</p>
+<p>More than an accessory, each Tikar Bangle is a timeless treasure, a union of tradition and contemporary elegance designed to be worn, collected and cherished for generations.</p>`,
+    },
+    'round-bowl-baskets': {
+      heading: 'Round Bowl Baskets',
+      image:   'assets/products/winter-2026/bt01.webp',
+      imageAlt: 'Handwoven African round bowl basket, natural fibres and locally gathered grasses',
+      body: `<p>Graceful in form and rich in tradition, our Round Bowl Baskets celebrate the artistry of African weaving. Each is hand-crafted from locally gathered grasses and natural fibres, shaped with patient precision into a seamless curve that is both sculptural and functional.</p>
+<p>Every basket carries the subtle variations of the maker's hand, resulting in textures and tones that are entirely unique.</p>
+<p>From compact bowls perfect for a tabletop to expansive centrepieces that anchor a room, the collection offers sizes to suit every space and purpose.</p>
+<p>Whether displayed as a striking accent or used in everyday living, these baskets embody quiet luxury. They bring the warmth of heritage and the elegance of craftsmanship into the contemporary home.</p>`,
+    },
+  };
+
+  // ─── Render category editorial ────────────────────────────────────────
+
+  function renderCategoryEditorial() {
+    if (!categoryEditorial) return;
+
+    const cats = state.filters.categories;
+    const singleCat = cats && cats.length === 1 ? cats[0] : null;
+    const editorial = singleCat ? CATEGORY_EDITORIALS[singleCat] : null;
+
+    if (!editorial) {
+      categoryEditorial.style.display = 'none';
+      categoryEditorial.innerHTML = '';
+      return;
+    }
+
+    categoryEditorial.style.display = '';
+    categoryEditorial.innerHTML = `
+      <div class="category-editorial-block">
+        <div class="category-editorial-image">
+          <img
+            src="${editorial.image}"
+            alt="${editorial.imageAlt}"
+            loading="lazy"
+            width="800" height="1067"
+          >
+        </div>
+        <div class="category-editorial-text">
+          <p class="subheading">Our Curations</p>
+          <h2>${editorial.heading}</h2>
+          ${editorial.body}
+        </div>
+      </div>
+    `;
+  }
 
   // ─── Parse URL params on load ─────────────────────────────────────────
 
@@ -165,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ─── Render ───────────────────────────────────────────────────────────
 
   function render() {
+    renderCategoryEditorial();
     const products = getFilteredProducts();
 
     if (countEl) {
@@ -178,9 +248,12 @@ document.addEventListener('DOMContentLoaded', function () {
         <div style="grid-column:1/-1;text-align:center;padding:var(--s20) 0;">
           <p style="font-size:var(--fs-xl);color:var(--text-3);margin-bottom:var(--s4);">No pieces found</p>
           <p style="font-size:var(--fs-sm);color:var(--text-3);margin-bottom:var(--s6);">
-            ${state.query ? `No results for "<em>${escHtml(state.query)}</em>". ` : ''}Try adjusting or clearing your filters.
+            ${state.query ? `No results for "<em>${escHtml(state.query)}</em>". ` : ''}This collection is being prepared. Please contact Roots Gallery for current availability.
           </p>
-          <button class="btn btn-ghost" id="clear-filters-inline">Clear all filters</button>
+          <div style="display:flex;gap:var(--s4);justify-content:center;flex-wrap:wrap;">
+            <button class="btn btn-ghost" id="clear-filters-inline">Clear all filters</button>
+            <a href="https://wa.me/972553193561" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">Chat on WhatsApp</a>
+          </div>
         </div>
       `;
       document.getElementById('clear-filters-inline')?.addEventListener('click', clearFilters);

@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ─── Page title and meta ──────────────────────────────────────────────
 
-  document.title = `${product.name}${product.colour ? ` — ${product.colour}` : ''} ${product.styleNumber} — Roots Gallery`;
+  document.title = `${product.name}${product.colour ? ` — ${product.colour}` : ''} ${product.styleNumber} | ROOTS`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) {
-    metaDesc.content = `${product.name}${product.colour ? `, ${product.colour}` : ''} — style ${product.styleNumber} — Roots Gallery Winter 2026 collection.`;
+    metaDesc.content = `${product.name}${product.colour ? `, ${product.colour}` : ''} — style ${product.styleNumber}. Handcrafted African artisanal piece from ROOTS.`;
   }
 
   // ─── Gallery ──────────────────────────────────────────────────────────
@@ -157,6 +157,42 @@ document.addEventListener('DOMContentLoaded', function () {
           addToCartBtn.disabled    = false;
         }, 2500);
       });
+    }
+  }
+
+  // ─── Collection story link ────────────────────────────────────────────
+
+  const COLLECTION_STORIES = {
+    'namji-dolls': {
+      label: 'Namji Dolls',
+      intro: 'Handcrafted symbols of beauty, fertility and protection, originating from the Namji people of Cameroon.',
+    },
+    'tikar-bangles': {
+      label: 'Tikar Bangles',
+      intro: 'Wearable art inspired by the centuries-old beadwork traditions of Cameroon\'s Tikar people.',
+    },
+    'round-bowl-baskets': {
+      label: 'Round Bowl Baskets',
+      intro: 'Hand-crafted from locally gathered grasses and natural fibres, celebrating the artistry of African weaving.',
+    },
+  };
+
+  const collectionLinkEl = document.getElementById('product-collection-link');
+  if (collectionLinkEl) {
+    const story = COLLECTION_STORIES[product.category];
+    if (story) {
+      const isHandcrafted = ['namji-dolls','tikar-bangles','round-bowl-baskets'].includes(product.category);
+      collectionLinkEl.innerHTML = `
+        <p class="subheading" style="margin-bottom:var(--s3);">Part of the ${story.label} collection</p>
+        <p style="font-size:var(--fs-sm);color:var(--text-2);line-height:var(--lh-loose);margin-bottom:var(--s4);">${story.intro}</p>
+        ${isHandcrafted ? `<p style="font-size:var(--fs-xs);color:var(--text-3);font-style:italic;margin-bottom:var(--s5);">As each piece is handcrafted, natural variations are part of its individual character.</p>` : ''}
+        <a href="shop.html?category=${product.category}" class="text-link" style="font-size:var(--fs-sm);">
+          Explore the ${story.label} collection
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:14px;height:14px;margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      `;
+    } else {
+      collectionLinkEl.style.display = 'none';
     }
   }
 

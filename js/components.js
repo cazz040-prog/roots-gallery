@@ -37,7 +37,7 @@
     <!-- Logo -->
     <a href="index.html" class="site-logo" aria-label="Roots Gallery — Home">
       <span class="logo-name">Roots Gallery</span>
-      <span class="logo-sub">Namji Dolls of Cameroon</span>
+      <span class="logo-sub">African artisanal home d&#233;cor</span>
     </a>
 
     <!-- Desktop Navigation -->
@@ -46,17 +46,17 @@
 
         <li class="nav-item has-mega-menu ${activePage === 'shop' ? 'active' : ''}">
           <button type="button" aria-haspopup="true" aria-expanded="false" id="mega-menu-toggle">
-            Collection ${ICONS.chevron}
+            Shop ${ICONS.chevron}
           </button>
-          <div class="mega-menu-wrapper" role="region" aria-label="Collection categories">
+          <div class="mega-menu-wrapper" role="region" aria-label="Our Curations">
             <div class="mega-menu-grid">
               <div class="mega-menu-col">
-                <h4>Categories</h4>
+                <h4>Our Curations</h4>
                 <ul>
                   <li><a href="shop.html">All Pieces</a></li>
                   <li><a href="shop.html?category=namji-dolls">Namji Dolls</a></li>
                   <li><a href="shop.html?category=tikar-bangles">Tikar Bangles</a></li>
-                  <li><a href="shop.html?category=woven-baskets">Woven Baskets</a></li>
+                  <li><a href="shop.html?category=round-bowl-baskets">Round Bowl Baskets</a></li>
                   <li><a href="shop.html?category=wooden-bowls">Wooden Bowls</a></li>
                   <li><a href="shop.html?category=small-bowls">Small Bowls</a></li>
                 </ul>
@@ -70,20 +70,17 @@
                 </ul>
               </div>
               <div class="mega-menu-col">
-                <h4>By Use</h4>
+                <h4>The Collection</h4>
                 <ul>
                   <li><a href="shop.html">Interior Styling</a></li>
                   <li><a href="shop.html">Gifts &amp; Gifting</a></li>
-                  <li><a href="shop.html">Collector's Shelf</a></li>
-                  <li><a href="shop.html">Ceremonial Pieces</a></li>
+                  <li><a href="index.html#collectors-home">The Collector's Home</a></li>
                 </ul>
               </div>
               <div class="mega-menu-col">
                 <h4>Discover</h4>
                 <ul>
                   <li><a href="about.html">Our Story</a></li>
-                  <li><a href="about.html#craft">The Craft</a></li>
-                  <li><a href="about.html#culture">The Culture</a></li>
                   <li><a href="contact.html">Contact Us</a></li>
                 </ul>
               </div>
@@ -92,7 +89,11 @@
         </li>
 
         <li class="nav-item ${activePage === 'about' ? 'active' : ''}">
-          <a href="about.html">About</a>
+          <a href="about.html">Our Story</a>
+        </li>
+
+        <li class="nav-item">
+          <a href="index.html#collectors-home">The Collector's Home</a>
         </li>
 
         <li class="nav-item ${activePage === 'contact' ? 'active' : ''}">
@@ -131,14 +132,17 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
   <div class="mobile-menu-inner">
     <ul class="mobile-nav-links" role="list">
-      <li><a href="shop.html" class="mobile-nav-link">Collection ${ICONS.arrow}</a></li>
-      <li><a href="about.html" class="mobile-nav-link">About ${ICONS.arrow}</a></li>
+      <li><a href="shop.html" class="mobile-nav-link">Shop ${ICONS.arrow}</a></li>
+      <li><a href="about.html" class="mobile-nav-link">Our Story ${ICONS.arrow}</a></li>
+      <li><a href="index.html#collectors-home" class="mobile-nav-link">The Collector's Home ${ICONS.arrow}</a></li>
       <li><a href="contact.html" class="mobile-nav-link">Contact ${ICONS.arrow}</a></li>
       <li><a href="cart.html" class="mobile-nav-link">Cart ${ICONS.arrow}</a></li>
     </ul>
     <div style="margin-top:var(--s8);display:flex;gap:var(--s3);">
-      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram">${ICONS.insta}</a>
-      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Facebook">${ICONS.fb}</a>
+      <a href="https://www.instagram.com/roots_gallery_il/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow Roots Gallery on Instagram">${ICONS.insta}</a>
+      <a href="https://wa.me/972553193561" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Chat with Roots Gallery on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+      </a>
     </div>
   </div>
 </nav>
@@ -157,13 +161,18 @@
       <div class="footer-brand">
         <a href="index.html" class="site-logo" aria-label="Roots Gallery — Home">
           <span class="logo-name">Roots Gallery</span>
-          <span class="logo-sub">Namji Dolls of Cameroon</span>
+          <span class="logo-sub">African artisanal home d&#233;cor</span>
         </a>
-        <p>Handcrafted Namji dolls from the Adamawa Region of Cameroon. Cultural objects for the considered home.</p>
+        <p>African artisanal home d&#233;cor, rooted in heritage, craftsmanship and the beauty of the handmade.</p>
         <div class="footer-social">
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow on Instagram">${ICONS.insta}</a>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow on Facebook">${ICONS.fb}</a>
-          <a href="contact.html" class="footer-social-link" aria-label="Find us">${ICONS.pin}</a>
+          <a href="https://www.instagram.com/roots_gallery_il/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow Roots Gallery on Instagram">${ICONS.insta}</a>
+          <a href="https://wa.me/972553193561" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Chat with Roots Gallery on WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          </a>
+        </div>
+        <div style="margin-top:var(--s4);display:flex;flex-direction:column;gap:var(--s2);">
+          <a href="tel:+972553193561" style="font-size:var(--fs-sm);color:var(--text-2);text-decoration:none;">+972 55 319 3561</a>
+          <a href="https://www.instagram.com/roots_gallery_il/" target="_blank" rel="noopener noreferrer" style="font-size:var(--fs-sm);color:var(--text-2);text-decoration:none;">@roots_gallery_il</a>
         </div>
       </div>
 
@@ -173,7 +182,7 @@
           <li><a href="shop.html">All Pieces</a></li>
           <li><a href="shop.html?category=namji-dolls">Namji Dolls</a></li>
           <li><a href="shop.html?category=tikar-bangles">Tikar Bangles</a></li>
-          <li><a href="shop.html?category=woven-baskets">Woven Baskets</a></li>
+          <li><a href="shop.html?category=round-bowl-baskets">Round Bowl Baskets</a></li>
           <li><a href="shop.html?category=wooden-bowls">Wooden Bowls</a></li>
           <li><a href="shop.html?category=small-bowls">Small Bowls</a></li>
           <li><a href="shop.html?filter=new">New Arrivals</a></li>
@@ -181,13 +190,12 @@
       </div>
 
       <div class="footer-col">
-        <h4>Information</h4>
+        <h4>Discover</h4>
         <ul>
-          <li><a href="about.html">About Namji Dolls</a></li>
-          <li><a href="about.html#craft">The Craft</a></li>
-          <li><a href="about.html#culture">Cultural Context</a></li>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="index.html#collectors-home">The Collector's Home</a></li>
           <li><a href="contact.html">Contact Us</a></li>
-          <li><a href="contact.html">Wholesale Enquiries</a></li>
+          <li><a href="contact.html">Enquiries</a></li>
         </ul>
       </div>
 
@@ -196,8 +204,6 @@
         <ul>
           <li><a href="contact.html">Shipping &amp; Delivery</a></li>
           <li><a href="contact.html">Returns &amp; Exchanges</a></li>
-          <li><a href="about.html">Care Instructions</a></li>
-          <li><a href="about.html">Provenance &amp; Authenticity</a></li>
           <li><a href="contact.html">FAQs</a></li>
         </ul>
       </div>
