@@ -9,7 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪆</text></svg>">
 
   <style>
-    /* Checkout-specific overrides */
+    /* ── Checkout step indicator ── */
     .checkout-steps {
       display: flex;
       align-items: center;
@@ -28,12 +28,8 @@
       text-transform: uppercase;
       color: var(--text-3);
     }
-    .checkout-step.active {
-      color: var(--charcoal);
-    }
-    .checkout-step.done {
-      color: var(--sage);
-    }
+    .checkout-step.active { color: var(--charcoal); }
+    .checkout-step.done   { color: var(--sage); }
     .checkout-step-num {
       width: 24px;
       height: 24px;
@@ -57,24 +53,117 @@
       max-width: 60px;
       margin: 0 var(--s4);
     }
-    .payment-placeholder {
-      background: var(--warm-white);
-      border: 2px dashed var(--border);
-      padding: var(--s12);
-      text-align: center;
-      border-radius: var(--r-md);
-    }
-    .payment-placeholder p {
+
+    /* ── Payment options — coming soon ── */
+    .payment-options-intro {
       font-size: var(--fs-sm);
+      color: var(--text-2);
+      line-height: var(--lh-loose);
+      background: var(--warm-white);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--sand-dark);
+      padding: var(--s4) var(--s5);
+      margin-bottom: var(--s5);
+    }
+    .payment-cards {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s3);
+    }
+    .payment-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s4);
+      padding: var(--s5) var(--s6);
+      border: 1.5px solid var(--border-light);
+      background: var(--warm-white);
+      opacity: 0.6;
+      cursor: not-allowed;
+      user-select: none;
+    }
+    .payment-card:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+      opacity: 0.75;
+    }
+    .payment-card-left {
+      display: flex;
+      align-items: center;
+      gap: var(--s4);
+    }
+    .payment-card-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--border-light);
       color: var(--text-3);
+      flex-shrink: 0;
+    }
+    .payment-card-icon svg { width: 16px; height: 16px; }
+    .payment-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .payment-card-name {
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+    .payment-card-desc {
+      font-size: var(--fs-xs);
+      color: var(--text-3);
+    }
+    .payment-card-badge {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      border: 1px solid var(--border-light);
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── Disabled checkout submit ── */
+    .btn-checkout-submit {
+      width: 100%;
+      text-align: center;
+      cursor: not-allowed;
+      opacity: 0.45;
+      pointer-events: none;
       margin-bottom: var(--s4);
     }
-    .payment-placeholder h4 {
-      font-family: var(--ff-body);
-      font-size: var(--fs-base);
-      font-weight: 500;
+    .checkout-coming-notice {
+      font-size: var(--fs-xs);
+      color: var(--text-3);
+      line-height: var(--lh-loose);
+      margin-bottom: var(--s8);
+    }
+    .checkout-coming-notice a {
       color: var(--text-2);
-      margin-bottom: var(--s3);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .checkout-coming-notice a:hover {
+      color: var(--charcoal);
+    }
+
+    /* ── Responsive: stack shipping options on small screens ── */
+    @media (max-width: 480px) {
+      .payment-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--s3);
+      }
+      .checkout-steps {
+        overflow-x: auto;
+        padding-bottom: var(--s4);
+      }
     }
   </style>
 </head>
@@ -125,7 +214,11 @@
       <div class="checkout-layout">
 
         <!-- ─── CHECKOUT FORM ─── -->
-        <div class="checkout-form">
+        <!-- novalidate: browser validation suppressed while payment is inactive.
+             onsubmit: prevents any accidental form submission. -->
+        <form class="checkout-form" id="checkout-form" novalidate
+              onsubmit="event.preventDefault(); return false;"
+              aria-label="Checkout details form — payment not yet available">
 
           <!-- Contact -->
           <div class="checkout-section">
@@ -190,6 +283,7 @@
                   <option value="DE">Germany</option>
                   <option value="FR">France</option>
                   <option value="AU">Australia</option>
+                  <option value="IL">Israel</option>
                   <option value="CM">Cameroon</option>
                 </select>
               </div>
@@ -232,26 +326,73 @@
             </div>
           </div>
 
-          <!-- Payment placeholder -->
-          <div class="checkout-section">
-            <h3>Payment</h3>
-            <div class="payment-placeholder">
-              <h4>Payment Integration Placeholder</h4>
-              <p>Connect a payment gateway (Stripe, PayFast, Paystack, etc.) to enable real transactions. This section will render the payment form once integrated.</p>
-              <div style="display:flex;gap:var(--s3);justify-content:center;flex-wrap:wrap;margin-bottom:var(--s4);">
-                <span style="padding:4px 12px;background:var(--white);border:1px solid var(--border);font-size:var(--fs-xs);color:var(--text-3);">Visa</span>
-                <span style="padding:4px 12px;background:var(--white);border:1px solid var(--border);font-size:var(--fs-xs);color:var(--text-3);">Mastercard</span>
-                <span style="padding:4px 12px;background:var(--white);border:1px solid var(--border);font-size:var(--fs-xs);color:var(--text-3);">PayPal</span>
-                <span style="padding:4px 12px;background:var(--white);border:1px solid var(--border);font-size:var(--fs-xs);color:var(--text-3);">EFT</span>
+          <!-- Payment — coming soon -->
+          <div class="checkout-section" id="payment-section">
+            <h3 id="payment-heading">Payment</h3>
+
+            <p class="payment-options-intro">
+              These payment options will be available when secure checkout opens. Roots Gallery does not store card details.
+            </p>
+
+            <div class="payment-cards" role="group" aria-labelledby="payment-heading" aria-describedby="payment-coming-note">
+
+              <!-- Credit / debit card -->
+              <div class="payment-card"
+                   role="button"
+                   aria-disabled="true"
+                   tabindex="0"
+                   aria-label="Credit or debit card — Coming soon">
+                <div class="payment-card-left">
+                  <span class="payment-card-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                      <line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                  </span>
+                  <span class="payment-card-info">
+                    <span class="payment-card-name">Credit or debit card</span>
+                    <span class="payment-card-desc">Secure card payment</span>
+                  </span>
+                </div>
+                <span class="payment-card-badge" aria-hidden="true">Coming soon</span>
               </div>
+
+              <!-- Bit -->
+              <div class="payment-card"
+                   role="button"
+                   aria-disabled="true"
+                   tabindex="0"
+                   aria-label="Bit — Coming soon">
+                <div class="payment-card-left">
+                  <span class="payment-card-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M9 12h6M12 9v6"/>
+                    </svg>
+                  </span>
+                  <span class="payment-card-info">
+                    <span class="payment-card-name">Bit</span>
+                    <span class="payment-card-desc">Pay securely using Bit</span>
+                  </span>
+                </div>
+                <span class="payment-card-badge" aria-hidden="true">Coming soon</span>
+              </div>
+
             </div>
           </div>
 
-          <button type="button" class="btn btn-primary btn-lg" style="margin-bottom:var(--s8);" onclick="alert('Payment integration required. Connect Stripe, PayFast, or your preferred gateway to process orders.')">
-            Place Order
+          <!-- Disabled checkout button -->
+          <button type="submit"
+                  class="btn btn-primary btn-lg btn-checkout-submit"
+                  disabled
+                  aria-disabled="true">
+            Secure Checkout Coming Soon
           </button>
+          <p class="checkout-coming-notice" id="payment-coming-note">
+            Online payment is being prepared. If you would like to place an order in the meantime, please <a href="contact.html">contact us</a>.
+          </p>
 
-        </div>
+        </form>
 
         <!-- ─── ORDER SUMMARY ─── -->
         <aside class="checkout-summary">
@@ -267,9 +408,9 @@
           <div style="margin-top:var(--s6);padding:var(--s5);background:var(--warm-white);border:1px solid var(--border-light);">
             <div style="display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s3);">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;color:var(--sage);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span style="font-size:var(--fs-xs);color:var(--text-2);">Secure, encrypted checkout</span>
+              <span style="font-size:var(--fs-xs);color:var(--text-2);">Your details are safe</span>
             </div>
-            <p style="font-size:var(--fs-xs);color:var(--text-3);line-height:var(--lh-loose);">Your payment information is never stored. All transactions are encrypted and processed securely.</p>
+            <p style="font-size:var(--fs-xs);color:var(--text-3);line-height:var(--lh-loose);">Roots Gallery does not store card or payment details. Contact us directly to place an order while secure checkout is being prepared.</p>
           </div>
         </aside>
 

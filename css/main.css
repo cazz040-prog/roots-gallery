@@ -898,12 +898,24 @@ main {
   text-transform: uppercase;
 }
 
-/* CTAs */
+/* CTAs — stacked column so both buttons share a common left edge */
 .hero-actions {
   display: flex;
-  align-items: center;
-  gap: var(--s4);
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+/* Both hero buttons MUST have identical outer dimensions.
+   Border (1.5px solid on both), padding (1.1rem) and font-size (fs-sm)
+   are shared via .btn-lg; width is fixed here so neither button
+   sizes itself to its own text label. */
+.hero-actions .btn {
+  width: 260px;
+  box-sizing: border-box;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* ============================================================
@@ -1369,30 +1381,38 @@ main {
 }
 
 .category-card:hover img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
-/* Deep gradient ensures text is always legible */
+/* Rich editorial gradient: dark editorial zone at base, photography clean above mid-card */
 .category-card-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
     to top,
-    rgba(18,10,4,0.92) 0%,
-    rgba(18,10,4,0.62) 38%,
-    rgba(18,10,4,0.18) 65%,
-    rgba(18,10,4,0.0) 80%
+    rgba(18, 10, 4, 0.96) 0%,
+    rgba(18, 10, 4, 0.91) 14%,
+    rgba(18, 10, 4, 0.76) 28%,
+    rgba(18, 10, 4, 0.44) 44%,
+    rgba(18, 10, 4, 0.14) 60%,
+    rgba(18, 10, 4, 0.03) 76%,
+    transparent 90%
   );
   transition: background var(--ease-base);
+  pointer-events: none;
 }
 
 .category-card:hover .category-card-overlay {
   background: linear-gradient(
     to top,
-    rgba(18,10,4,0.95) 0%,
-    rgba(18,10,4,0.7) 42%,
-    rgba(18,10,4,0.22) 68%,
-    rgba(18,10,4,0.0) 82%
+    rgba(18, 10, 4, 0.97) 0%,
+    rgba(18, 10, 4, 0.93) 14%,
+    rgba(18, 10, 4, 0.79) 28%,
+    rgba(18, 10, 4, 0.48) 44%,
+    rgba(18, 10, 4, 0.17) 60%,
+    rgba(18, 10, 4, 0.04) 76%,
+    transparent 90%
   );
 }
 
@@ -1401,28 +1421,31 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--s8) var(--s6);
+  z-index: 3;
+  padding: var(--s8) 1.75rem;
   color: var(--white);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .category-card-content .subheading {
-  color: rgba(255,255,255,0.45);
+  color: rgba(220, 206, 185, 0.70);
   margin-bottom: var(--s2);
+  letter-spacing: 0.12em;
 }
 
 .category-card-content h3 {
   font-family: var(--ff-display);
   font-size: clamp(var(--fs-xl), 2vw, var(--fs-3xl));
   font-weight: 400;
-  color: var(--white);
+  color: var(--warm-white);
   margin-bottom: var(--s2);
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 
 .category-card-content .text-link {
-  color: rgba(255,255,255,0.75);
-  border-color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.55);
   font-size: var(--fs-xs);
   margin-top: var(--s3);
 }
@@ -1435,10 +1458,10 @@ main {
 /* Always visible — descriptions are editorial, not optional */
 .category-card-desc {
   font-size: var(--fs-sm);
-  color: rgba(255,255,255,0.75);
-  line-height: 1.7;
+  color: rgba(237, 229, 214, 0.88);
+  line-height: 1.65;
   margin: var(--s3) 0 var(--s4);
-  max-width: 30ch;
+  max-width: 38ch;
   display: block;
 }
 
@@ -3712,7 +3735,7 @@ main {
   padding: clamp(var(--s10), 5vw, var(--s20)) clamp(var(--s8), 5vw, var(--s16));
 }
 
-/* Subtle background shimmer on category cards */
+/* Subtle background shimmer on category cards — sits above overlay but below text */
 .category-card::before {
   content: '';
   position: absolute;
@@ -3723,7 +3746,7 @@ main {
     rgba(201, 160, 71, 0.08) 100%
   );
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
   transition: opacity var(--ease-base);
   pointer-events: none;
 }
@@ -4521,5 +4544,290 @@ body[data-page="checkout"] main {
   .toast {
     max-width: 100%;
     width: 100%;
+  }
+}
+
+/* ============================================================
+   MOBILE UX REFINEMENT — PASS 3
+   Focused corrections based on mobile screenshot review.
+   Breakpoints: 360 · 375 · 390 · 430 · 480 · 640 · 768px
+   ============================================================ */
+
+/* ── Section-dark: readable subheading colour on dark sections ── */
+.section-dark .subheading {
+  color: rgba(255,255,255,0.55);
+}
+
+/* ── 1. Header: readable logo, adequate icon size, breathing room ── */
+@media (max-width: 640px) {
+  :root {
+    --header-h: 64px; /* was 60px — 4px more breathing room */
+  }
+
+  /* Logo tagline: was 0.6rem (9.6px), barely readable — increase to 11px */
+  .site-logo .logo-sub {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+  }
+
+  /* Icons: visually larger inside the 44px hit zone */
+  .header-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Prevent logo/actions crowding at narrow viewports */
+  .header-inner {
+    gap: var(--s3);
+  }
+}
+
+/* ── 2. Hero: subtitle was 11px — bumped to 13px for readability ── */
+@media (max-width: 767px) {
+  .hero-subtitle {
+    font-size: var(--fs-sm);   /* was var(--fs-xs) = 11px */
+    letter-spacing: 0.12em;
+    margin-bottom: var(--s8);
+  }
+}
+
+/* ── 3. Category cards: proportional on 2-column mobile ── */
+@media (max-width: 640px) {
+  /* Slightly wider gutter between cards */
+  .category-grid {
+    gap: var(--s3);
+  }
+
+  /* Reduce padding — 1.75rem desktop becomes 16px on 2-col mobile */
+  .category-card-content {
+    padding: var(--s5) var(--s4);
+  }
+
+  .category-card-content h3 {
+    font-size: clamp(var(--fs-base), 4.5vw, var(--fs-2xl));
+    margin-bottom: var(--s1);
+    line-height: 1.2;
+  }
+
+  /* Clamp description: 3 lines max, tighter line-height */
+  .category-card-desc {
+    font-size: var(--fs-xs);
+    line-height: 1.55;
+    margin: var(--s2) 0 var(--s2);
+    max-width: 22ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .category-card-content .text-link {
+    font-size: 10px;
+    margin-top: var(--s2);
+  }
+
+  /* Mobile gradient: dark editorial base, photography visible from ~60% up */
+  .category-card-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(18, 10, 4, 0.97) 0%,
+      rgba(18, 10, 4, 0.92) 14%,
+      rgba(18, 10, 4, 0.78) 28%,
+      rgba(18, 10, 4, 0.52) 44%,
+      rgba(18, 10, 4, 0.20) 62%,
+      rgba(18, 10, 4, 0.05) 78%,
+      transparent 92%
+    );
+  }
+}
+
+/* Reduce to 2-line description on smallest phones to preserve photography */
+@media (max-width: 430px) {
+  .category-card-desc {
+    -webkit-line-clamp: 2;
+  }
+}
+
+/* ── 4. Story block (dark Namji feature): contrast + shorter image ── */
+@media (max-width: 640px) {
+  /* Portrait 3:4 image becomes 335×447px — too tall. Switch to landscape */
+  .story-block-image {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Keep doll's head/body visible; crop base slightly */
+  .story-block-image img {
+    object-position: center 15%;
+  }
+
+  /* Tighter padding */
+  .story-block {
+    padding: var(--s16) 0;
+  }
+
+  /* Body text opacity: was 0.62 (~6:1) — increase to 0.78 (~7.7:1) */
+  .story-block-content p {
+    font-size: var(--fs-base);
+    color: rgba(255,255,255,0.78);
+  }
+
+  /* Stat labels: were 11px at 0.4 opacity — fails WCAG AA. Fix: 13px/0.65 */
+  .story-stat-label {
+    font-size: var(--fs-sm);
+    color: rgba(255,255,255,0.65);
+    letter-spacing: var(--ls-wide);
+  }
+
+  /* Tighter stat row spacing */
+  .story-stats {
+    gap: var(--s5) var(--s6);
+    flex-wrap: wrap;
+  }
+}
+
+/* ── 5. Collector's Home gallery: compact aspect ratios ── */
+@media (max-width: 640px) {
+  /* Main portrait image: was 335×447px at 375px — reduce to landscape */
+  .collectors-gallery-main {
+    aspect-ratio: 3 / 2;
+  }
+
+  /* Secondary images: tighter landscape crop */
+  .collectors-gallery-secondary {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Tighter gap between stacked images */
+  .collectors-gallery {
+    gap: var(--s2);
+  }
+}
+
+/* ── 6. Proverb section: proportional padding on mobile ── */
+@media (max-width: 640px) {
+  /* Was var(--s20)/var(--s24) = 80/96px — reduce to 48/64px */
+  .proverb-section {
+    padding: var(--s12) 0 var(--s16);
+  }
+
+  /* Decorative line margin: was var(--s16) = 64px — reduce to 32px */
+  .proverb-section::before {
+    margin-bottom: var(--s8);
+  }
+
+  /* Allow natural line breaks rather than forced mid-word */
+  .proverb-quote {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+/* ── 7. Product cards: small image-padding gain on mobile ── */
+@media (max-width: 640px) {
+  /* Was 6% — reduces slightly to give image more room in 2-col layout */
+  .product-card-image {
+    padding: 4%;
+  }
+
+  /* Quick-add: ensure a usable tap area */
+  .product-card-quick-add {
+    padding: var(--s2) 0;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ── 8. Footer: mobile restructure ── */
+@media (max-width: 640px) {
+  /* Reduce top whitespace: was var(--s20) = 80px */
+  .site-footer {
+    padding-top: var(--s12);
+  }
+
+  /* 2-column layout: brand spans full width, nav cols side-by-side */
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s8) var(--s5);
+  }
+
+  /* Brand block: full width + visual separator */
+  .footer-brand {
+    grid-column: 1 / -1;
+    padding-bottom: var(--s6);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* Brand description: was rgba(255,255,255,0.45) ≈ 4.1:1 — fails AA for small text */
+  .footer-brand p {
+    color: rgba(255,255,255,0.65);
+    max-width: 100%;
+  }
+
+  /* Column headings: compact */
+  .footer-col h4 {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    margin-bottom: var(--s3);
+  }
+
+  /* Links: tighter list + 36px minimum touch height */
+  .footer-col ul {
+    gap: var(--s1);
+  }
+
+  .footer-col a {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    font-size: var(--fs-sm);
+  }
+
+  /* Social icons: expand to 44px touch target */
+  .footer-social-link {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Footer bottom bar: tighter */
+  .footer-bottom {
+    padding: var(--s4) 0 var(--s6);
+  }
+}
+
+/* Revert to single-column footer on very narrow screens */
+@media (max-width: 360px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: var(--s6);
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+}
+
+/* ── 9. Shop page: fix pre-existing overflow at 320px ── */
+/* The sort-select + view-toggle row has min-content ≈ 307px, wider than the
+   280px content area at 320px. min-width:0 on the grid child allows shrinking;
+   hiding the view-toggle removes the excess at the narrowest breakpoint. */
+@media (max-width: 360px) {
+  .shop-main {
+    min-width: 0;
+  }
+
+  .view-toggle {
+    display: none;
+  }
+}
+
+/* ── 10. Hero buttons: identical full-width on tablet and mobile ── */
+/* On screens below 1024px the hero-copy panel is too narrow for a 260px
+   fixed-width button (38 vw panel minus padding = ~208–307px content area).
+   Switch to full-width so both buttons remain perfectly matched. */
+@media (max-width: 1023px) {
+  .hero-actions .btn {
+    width: 100%;
+    max-width: none; /* overrides any earlier max-width from btn-lg or audit rules */
   }
 }
